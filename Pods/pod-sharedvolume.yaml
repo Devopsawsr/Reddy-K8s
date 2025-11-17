@@ -17,7 +17,7 @@ spec:
   - name: busybox-container
     image: busybox:latest
     command: ["/bin/sh"]
-    args: ["-c", "while true; do date > /data/index.html; sleep 10; done"]
+    args: ["-c", "while true; do date >> /data/index.html; sleep 10; done"]
     volumeMounts:
     - name: shared-data
       mountPath: /data
