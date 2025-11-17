@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to K8s World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: fadeInDown 1.5s ease-out;
+            margin-bottom: 20px;
+        }
+
+        .k8s-logo {
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+            animation: rotate 20s linear infinite, pulse 2s ease-in-out infinite;
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            color: #fff;
+            animation: fadeInUp 2s ease-out;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .k8s-icon {
+            fill: #326ce5;
+            filter: drop-shadow(0 0 30px rgba(50, 108, 229, 0.8));
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 15s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 10s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 14s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 11s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 13s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 16s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 12s; }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            animation: fadeInUp 2.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <div class="container">
+        <h1>Welcome to K8s World! 🚀</h1>
+        
+        <div class="k8s-logo">
+            <svg class="k8s-icon" viewBox="0 0 256 249" xmlns="http://www.w3.org/2000/svg">
+                <path d="M128.001 0L20.668 72.31v144.62l107.333 62.313L235.334 216.93V72.31L128.001 0zm0 22.456l89.467 51.915v103.83l-89.467 51.915-89.467-51.915v-103.83L128.001 22.456z"/>
+                <circle cx="128" cy="124.5" r="50" fill="#326ce5"/>
+                <path d="M128 74.5l15.4 47.4h49.8l-40.3 29.3 15.4 47.4L128 169.3l-40.3 29.3 15.4-47.4-40.3-29.3h49.8z" fill="#fff"/>
+            </svg>
+        </div>
+        
+        <p class="welcome-text">Orchestrating Containers with Excellence</p>
+        <p class="subtitle">Powered by Kubernetes ☸️</p>
+    </div>
+</body>
+</html>
