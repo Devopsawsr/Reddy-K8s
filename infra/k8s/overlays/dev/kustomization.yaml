@@ -16,35 +16,35 @@ replicas:
     count: 1
 images:
   - name: cloudops/gateway
-    newName: REPLACE_ECR/cloudops-gateway
+    newName: docker.io/jaganmr49/cloudops-gateway
     newTag: "0.1-dev"
   - name: cloudops/web
-    newName: REPLACE_ECR/cloudops-web
+    newName: docker.io/jaganmr49/cloudops-web
     newTag: "0.1-dev"
   - name: cloudops/auth
-    newName: REPLACE_ECR/cloudops-auth
+    newName: docker.io/jaganmr49/cloudops-auth
     newTag: "0.1-dev"
   - name: cloudops/catalog
-    newName: REPLACE_ECR/cloudops-catalog
+    newName: docker.io/jaganmr49/cloudops-catalog
     newTag: "0.1-dev"
   - name: cloudops/cart
-    newName: REPLACE_ECR/cloudops-cart
+    newName: docker.io/jaganmr49/cloudops-cart
     newTag: "0.1-dev"
   - name: cloudops/orders
-    newName: REPLACE_ECR/cloudops-orders
+    newName: docker.io/jaganmr49/cloudops-orders
     newTag: "0.1-dev"
   - name: cloudops/learning
-    newName: REPLACE_ECR/cloudops-learning
+    newName: docker.io/jaganmr49/cloudops-learning
     newTag: "0.1-dev"
   - name: cloudops/labs
-    newName: REPLACE_ECR/cloudops-labs
+    newName: docker.io/jaganmr49/cloudops-labs
     newTag: "0.1-dev"
   - name: cloudops/community
-    newName: REPLACE_ECR/cloudops-community
+    newName: docker.io/jaganmr49/cloudops-community
     newTag: "0.1-dev"
   - name: cloudops/certificates
-    newName: REPLACE_ECR/cloudops-certificates
+    newName: docker.io/jaganmr49/cloudops-certificates
     newTag: "0.1-dev"
   - name: cloudops/leaderboard
-    newName: REPLACE_ECR/cloudops-leaderboard
+    newName: docker.io/jaganmr49/cloudops-leaderboard
     newTag: "0.1-dev"
