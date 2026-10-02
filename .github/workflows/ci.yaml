@@ -1,0 +1,57 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python
+        run: python3 -m compileall -q packages services
+      - name: Validate Docker Compose
+        run: docker compose config --quiet
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+      - name: Render Kubernetes overlays
+        run: |
+          set -euo pipefail
+          for environment in dev qa production; do
+            kubectl kustomize "infra/k8s/overlays/${environment}" > "/tmp/${environment}.yaml"
+            test -s "/tmp/${environment}.yaml"
+          done
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - gateway
+          - web
+          - auth
+          - catalog
+          - cart
+          - orders
+          - learning
+          - labs
+          - community
+          - certificates
+          - leaderboard
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t cloudops/${{ matrix.service }}:ci -f services/${{ matrix.service }}/Dockerfile .
+      - name: Scan image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: cloudops/${{ matrix.service }}:ci
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
