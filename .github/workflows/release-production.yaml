@@ -1,0 +1,91 @@
+name: Release to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: QA-approved immutable image tag
+        required: true
+        type: string
+
+concurrency:
+  group: release-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  verify-images:
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [gateway, web, auth, catalog, cart, orders, learning, labs, community, certificates, leaderboard]
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify approved image exists in ECR
+        run: |
+          set -euo pipefail
+          aws ecr describe-images \
+            --repository-name "cloudops-${{ matrix.service }}" \
+            --image-ids imageTag="${{ inputs.image_tag }}" \
+            --query 'imageDetails[0].imageDigest' \
+            --output text
+
+  update-production-gitops:
+    needs: verify-images
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Resolve ECR registry
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update Production overlay
+        run: ./scripts/set-overlay-images.sh production "${{ steps.ecr.outputs.registry }}" "${{ inputs.image_tag }}"
+
+      - name: Create Production release pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: release/production-${{ inputs.image_tag }}
+          delete-branch: true
+          commit-message: "chore(production): release images ${{ inputs.image_tag }}"
+          title: "Release ${{ inputs.image_tag }} to Production"
+          body: |
+            Releases the QA-approved immutable ECR images to Production desired state.
+
+            Merge only after reviewing the manifest diff. Argo CD Production sync remains manual.
+          add-paths: infra/k8s/overlays/production/kustomization.yaml
+
+      - name: Deployment handoff
+        run: |
+          echo "Production release PR created."
+          echo "After approval and merge, review the Argo CD diff and manually Sync cloudops-production."

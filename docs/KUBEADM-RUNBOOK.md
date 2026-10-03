@@ -16,12 +16,16 @@ All nodes and CNI pods must be ready before application deployment.
 
 ```bash
 export REGISTRY=docker.io/your-user
-export IMAGE_TAG=0.1-dev
+export IMAGE_TAG=$(git rev-parse --short=12 HEAD)
 docker login
 ./scripts/build-and-push.sh
 ```
 
-Replace `REPLACE_ECR` in the development overlay with the value of `REGISTRY`.
+The development overlay uses Docker Hub. Update its immutable tag with:
+
+```bash
+./scripts/set-overlay-images.sh dev "$REGISTRY" "$IMAGE_TAG"
+```
 
 ## 3. Pre-deployment validation
 

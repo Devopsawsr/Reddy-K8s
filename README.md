@@ -32,7 +32,7 @@ infra/k8s/overlays/        dev, QA and production Kustomize overlays
 infra/argocd/              Argo CD project and applications
 infra/terraform/           planned EKS/ECR/RDS infrastructure
 scripts/                   image publishing and smoke tests
-.github/workflows/         CI validation, builds and Trivy scans
+.github/workflows/         CI, Dev publishing, QA promotion and Production release
 docs/                      architecture and operating notes
 ```
 
@@ -56,16 +56,15 @@ Use Docker Hub or another registry accessible from every kubeadm node.
 
 ```bash
 docker login
-export REGISTRY=docker.io/REPLACE_WITH_YOUR_USER
-export IMAGE_TAG=0.1-dev
+export REGISTRY=docker.io/jaganmr49
+export IMAGE_TAG=$(git rev-parse --short=12 HEAD)
 ./scripts/build-and-push.sh
 ```
 
-Replace `REPLACE_ECR` in `infra/k8s/overlays/dev/kustomization.yaml` with the same registry namespace. For Docker Hub, the result should resemble:
+The Dev overlay already uses the `jaganmr49` Docker Hub namespace. Update it to the immutable tag that was published:
 
-```yaml
-newName: docker.io/your-user/cloudops-gateway
-newTag: 0.1-dev
+```bash
+./scripts/set-overlay-images.sh dev docker.io/jaganmr49 "$IMAGE_TAG"
 ```
 
 ## Deploy to kubeadm
@@ -113,21 +112,32 @@ kubectl logs -n cloudops-dev deployment/gateway
 kubectl describe deployment gateway -n cloudops-dev
 ```
 
-## CI pipeline
+## Delivery pipelines
 
-The GitHub Actions workflow:
+The repository follows **build once, promote the same immutable image**:
 
-1. Compiles all Python services.
-2. Validates Docker Compose.
-3. Renders all Kustomize overlays.
-4. Builds all 11 images independently.
-5. Scans every image for high and critical vulnerabilities using Trivy.
+1. `ci.yaml` validates Python, Docker Compose and every Kustomize overlay, builds all 11 images and blocks high/critical Trivy findings.
+2. `deploy-dev.yaml` runs only after successful CI on `main`, publishes commit-SHA images to Docker Hub and updates the Dev overlay.
+3. `promote-qa.yaml` copies the selected tested Docker Hub images into ECR without rebuilding and updates the QA overlay.
+4. `release-production.yaml` verifies that the QA-approved images exist in ECR and updates the Production desired state after GitHub Environment approval.
+5. Argo CD automatically reconciles Dev and QA. Production is intentionally synchronized manually after reviewing the Argo CD diff.
 
-Publishing to ECR is separated from pull-request validation and will be enabled after the AWS account, ECR registry and GitHub OIDC role are configured.
+Required GitHub configuration:
+
+| Scope | Name | Purpose |
+|---|---|---|
+| Repository secret | `DOCKERHUB_USERNAME` | Docker Hub login user |
+| Repository secret | `DOCKERHUB_TOKEN` | Docker Hub access token; never use the account password |
+| QA/Production variable | `AWS_REGION` | AWS region such as `us-east-1` |
+| QA/Production variable | `AWS_GITHUB_ACTIONS_ROLE_ARN` | IAM role trusted by GitHub OIDC |
+| GitHub Environment | `qa` | QA controls and variables |
+| GitHub Environment | `production` | Required reviewers and production controls |
+
+ECR repositories named `cloudops-<service>` must exist before QA promotion. The AWS role requires only the ECR operations used by the workflows. Long-lived AWS access keys are not stored in GitHub.
 
 ## Argo CD
 
-The Argo CD manifests use `https://github.com/Devopsawsr/cloudops-microservices-platform.git`. Change this URL if you select a different repository name, then apply:
+Every Argo CD application reads desired state from the single source-of-truth repository: `https://github.com/Devopsawsr/Reddy-K8s.git`.
 
 ```bash
 kubectl apply -f infra/argocd/project.yaml
@@ -140,9 +150,9 @@ Development and QA use automated synchronization. Production requires a manual A
 
 | Environment | Namespace | Image tag | Delivery |
 |---|---|---|---|
-| Development | `cloudops-dev` | `0.1-dev` | Automated |
-| QA | `cloudops-qa` | `0.1-qa` | Automated |
-| Production | `cloudops-prod` | `0.1` | Manual approval |
+| Development | `cloudops-dev` | Immutable Git SHA in Docker Hub | Automated after CI |
+| QA | `cloudops-qa` | Same Git SHA promoted to ECR | Workflow dispatch + automatic Argo sync |
+| Production | `cloudops-prod` | Same QA-approved ECR image | Environment approval + manual Argo sync |
 
 ## Current persistence scope
 

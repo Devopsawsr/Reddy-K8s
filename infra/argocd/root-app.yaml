@@ -6,13 +6,11 @@ metadata:
 spec:
   project: cloudops
   source:
-    repoURL: https://github.com/Devopsawsr/cloudops-microservices-platform.git
+    repoURL: https://github.com/Devopsawsr/Reddy-K8s.git
     targetRevision: main
     path: infra/argocd/apps
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  # Bootstrap changes are reviewed and synchronized manually. Child
+  # applications define their own environment-specific sync policies.

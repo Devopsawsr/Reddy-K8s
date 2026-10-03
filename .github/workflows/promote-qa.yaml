@@ -1,0 +1,95 @@
+name: Promote Images to QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Immutable Dev image tag (12-character Git SHA)
+        required: true
+        type: string
+
+concurrency:
+  group: promote-qa
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  DOCKERHUB_NAMESPACE: jaganmr49
+
+jobs:
+  promote:
+    environment: qa
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [gateway, web, auth, catalog, cart, orders, learning, labs, community, certificates, leaderboard]
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Promote the tested image without rebuilding
+        run: |
+          set -euo pipefail
+          source_image="docker.io/${DOCKERHUB_NAMESPACE}/cloudops-${{ matrix.service }}:${{ inputs.image_tag }}"
+          target_image="${{ steps.ecr.outputs.registry }}/cloudops-${{ matrix.service }}:${{ inputs.image_tag }}"
+          docker buildx imagetools create --tag "${target_image}" "${source_image}"
+
+  update-qa-gitops:
+    needs: promote
+    environment: qa
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Resolve ECR registry
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update QA overlay
+        run: ./scripts/set-overlay-images.sh qa "${{ steps.ecr.outputs.registry }}" "${{ inputs.image_tag }}"
+
+      - name: Create QA promotion pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: promotion/qa-${{ inputs.image_tag }}
+          delete-branch: true
+          commit-message: "chore(qa): promote images ${{ inputs.image_tag }}"
+          title: "Promote ${{ inputs.image_tag }} to QA"
+          body: |
+            Promotes the already-tested Docker Hub images to Amazon ECR without rebuilding.
+
+            After review and merge, Argo CD automatically synchronizes `cloudops-qa`.
+          add-paths: infra/k8s/overlays/qa/kustomization.yaml

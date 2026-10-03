@@ -14,4 +14,4 @@
 | certificates | API | `/api/certificates` |
 | leaderboard | API | `/api/leaderboard` |
 
-Each folder has its own `Dockerfile`. Images promote **dev → qa → production** (tags `0.1-dev`, `0.1-qa`, `0.1`).
+Each folder has its own `Dockerfile`. Images are built once with an immutable Git-SHA tag and promoted unchanged through **Dev → QA → Production**.

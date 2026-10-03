@@ -1,0 +1,133 @@
+name: Deploy Dev Images
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  DOCKERHUB_NAMESPACE: jaganmr49
+
+jobs:
+  publish:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.actor.login != 'github-actions[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - gateway
+          - web
+          - auth
+          - catalog
+          - cart
+          - orders
+          - learning
+          - labs
+          - community
+          - certificates
+          - leaderboard
+    steps:
+      - name: Resolve source revision
+        id: revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            sha="${{ github.event.workflow_run.head_sha }}"
+          else
+            sha="${GITHUB_SHA}"
+          fi
+          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
+          echo "tag=${sha::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout tested revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.revision.outputs.sha }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build immutable Dev image
+        run: |
+          set -euo pipefail
+          image="docker.io/${DOCKERHUB_NAMESPACE}/cloudops-${{ matrix.service }}"
+          docker build \
+            --label "org.opencontainers.image.revision=${{ steps.revision.outputs.sha }}" \
+            -t "${image}:${{ steps.revision.outputs.tag }}" \
+            -f "services/${{ matrix.service }}/Dockerfile" .
+
+      - name: Scan image before publishing
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: docker.io/${{ env.DOCKERHUB_NAMESPACE }}/cloudops-${{ matrix.service }}:${{ steps.revision.outputs.tag }}
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Push immutable and Dev convenience tags
+        run: |
+          set -euo pipefail
+          image="docker.io/${DOCKERHUB_NAMESPACE}/cloudops-${{ matrix.service }}"
+          docker tag "${image}:${{ steps.revision.outputs.tag }}" "${image}:dev"
+          docker push "${image}:${{ steps.revision.outputs.tag }}"
+          docker push "${image}:dev"
+
+  update-dev-gitops:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Resolve published image tag
+        id: revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            sha="${{ github.event.workflow_run.head_sha }}"
+          else
+            sha="${GITHUB_SHA}"
+          fi
+          echo "tag=${sha::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update Dev overlay
+        run: ./scripts/set-overlay-images.sh dev "docker.io/${DOCKERHUB_NAMESPACE}" "${{ steps.revision.outputs.tag }}"
+
+      - name: Commit GitOps change
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add infra/k8s/overlays/dev/kustomization.yaml
+          if git diff --cached --quiet; then
+            echo "Dev overlay already references this image tag"
+            exit 0
+          fi
+          git commit -m "chore(dev): deploy images ${{ steps.revision.outputs.tag }}"
+          git push origin HEAD:main

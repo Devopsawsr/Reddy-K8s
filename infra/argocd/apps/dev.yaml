@@ -6,7 +6,7 @@ metadata:
 spec:
   project: cloudops
   source:
-    repoURL: https://github.com/Devopsawsr/cloudops-microservices-platform.git
+    repoURL: https://github.com/Devopsawsr/Reddy-K8s.git
     targetRevision: main
     path: infra/k8s/overlays/dev
   destination:

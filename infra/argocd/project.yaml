@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Cloud and DevOps — Dev, QA, Production
   sourceRepos:
-    - https://github.com/Devopsawsr/cloudops-microservices-platform.git
+    - https://github.com/Devopsawsr/Reddy-K8s.git
   destinations:
     - namespace: argocd
       server: https://kubernetes.default.svc
@@ -20,5 +20,23 @@ spec:
     - group: ""
       kind: Namespace
   namespaceResourceWhitelist:
-    - group: "*"
-      kind: "*"
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: apps
+      kind: Deployment
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: policy
+      kind: PodDisruptionBudget
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: networking.k8s.io
+      kind: NetworkPolicy
