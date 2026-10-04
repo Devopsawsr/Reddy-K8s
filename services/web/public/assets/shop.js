@@ -113,13 +113,22 @@ function renderCart(items) {
   const list = document.getElementById("cart-list");
   if (!list) return;
   if (!items.length) {
-    list.innerHTML = "<tr><td colspan=\"3\">Cart is empty. Add a book from the round icons.</td></tr>";
+    list.innerHTML = "<tr><td colspan=\"4\">Cart is empty. Add a book from the round icons.</td></tr>";
     return;
   }
   list.innerHTML = items
     .map((i) => {
       const b = book(i.id);
-      return `<tr><td>${b.name}</td><td>${i.qty}</td><td>$${b.price * i.qty}</td></tr>`;
+      return `<tr>
+        <td>${b.name}</td>
+        <td>${i.qty}</td>
+        <td>$${b.price * i.qty}</td>
+        <td class="cart-actions">
+          <button type="button" data-cart-add="${i.id}" aria-label="Add one ${b.name}">+</button>
+          <button type="button" data-cart-reduce="${i.id}" aria-label="Remove one ${b.name}">−</button>
+          <button type="button" class="remove" data-cart-remove="${i.id}">Remove</button>
+        </td>
+      </tr>`;
     })
     .join("");
 }
@@ -194,6 +203,30 @@ loadCart().catch((error) => console.error(error.message));
 
 function book(id) {
   return BOOKS.find((b) => b.id === id);
+}
+
+const cartList = document.getElementById("cart-list");
+if (cartList) {
+  cartList.addEventListener("click", async (e) => {
+    const add = e.target.dataset.cartAdd;
+    const reduce = e.target.dataset.cartReduce;
+    const remove = e.target.dataset.cartRemove;
+    const id = add || reduce || remove;
+    if (!id) return;
+
+    const items = cart();
+    const hit = items.find((i) => i.id === id);
+    if (!hit) return;
+    if (add) hit.qty += 1;
+    if (reduce) hit.qty -= 1;
+    const updated = remove || hit.qty <= 0 ? items.filter((i) => i.id !== id) : items;
+
+    try {
+      await saveCart(updated);
+    } catch (error) {
+      window.alert(error.message);
+    }
+  });
 }
 
 const buyForm = document.getElementById("buy-form");

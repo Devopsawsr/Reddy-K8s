@@ -326,6 +326,12 @@ h1,h2,h3 { font-family: var(--tight); letter-spacing: -.03em; }
 .log h3 { font-family: var(--tight); color: #ffc107; margin: 0 0 10px; font-size: 16px; }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #efe7e2; font-size: 14px; }
+.cart-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cart-actions button {
+  border: 0; border-radius: 999px; padding: 6px 10px; cursor: pointer;
+  background: #f1e8ee; color: #714b67; font-weight: 800;
+}
+.cart-actions button.remove { background: #fee2e2; color: #991b1b; }
 .pass { color: #0f766e; font-weight: 800; }
 .fail { color: #b45309; font-weight: 800; }
 .note { background: #e7f8ee; border-radius: 16px; padding: 12px 14px; margin: 16px 0; }
