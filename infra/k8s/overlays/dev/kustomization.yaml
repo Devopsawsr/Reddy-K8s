@@ -18,34 +18,34 @@ replicas:
 images:
 - name: cloudops/auth
   newName: docker.io/jaganmr49/cloudops-auth
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/cart
   newName: docker.io/jaganmr49/cloudops-cart
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/catalog
   newName: docker.io/jaganmr49/cloudops-catalog
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/certificates
   newName: docker.io/jaganmr49/cloudops-certificates
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/community
   newName: docker.io/jaganmr49/cloudops-community
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/gateway
   newName: docker.io/jaganmr49/cloudops-gateway
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/labs
   newName: docker.io/jaganmr49/cloudops-labs
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/leaderboard
   newName: docker.io/jaganmr49/cloudops-leaderboard
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/learning
   newName: docker.io/jaganmr49/cloudops-learning
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/orders
   newName: docker.io/jaganmr49/cloudops-orders
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
 - name: cloudops/web
   newName: docker.io/jaganmr49/cloudops-web
-  newTag: 8956da9f1df0
+  newTag: 828d916ad21c
