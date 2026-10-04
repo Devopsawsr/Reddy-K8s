@@ -6,7 +6,9 @@ commonLabels:
 resources:
 - namespace.yaml
 - configmap.yaml
+- postgresql-init-configmap.yaml
 - postgresql-service.yaml
+- postgresql-statefulset.yaml
 - ../../base
 patchesStrategicMerge:
 - gateway-lb.yaml
