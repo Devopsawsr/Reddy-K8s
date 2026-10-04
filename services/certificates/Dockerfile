@@ -1,5 +1,6 @@
 FROM python:3.12-alpine
 WORKDIR /app
+RUN pip install --no-cache-dir "psycopg[binary]==3.2.10"
 COPY packages/common /app/common
 COPY services/certificates /app/service
 ENV PYTHONPATH=/app

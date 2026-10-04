@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 from common.server import App
-from common.store import load, save
+from common.db import fetch_one
+from psycopg.types.json import Jsonb
 
 app = App("cart")
 
 
 def get_cart(query):
     email = (query.get("email") or "").strip().lower()
-    rows = load("carts.json")
-    hit = next((c for c in rows if c.get("email") == email), {"email": email, "items": []})
+    hit = fetch_one("SELECT email, items FROM carts WHERE email = %s", (email,))
+    hit = hit or {"email": email, "items": []}
     return 200, hit
 
 
@@ -17,17 +18,17 @@ def save_cart(payload):
     items = payload.get("items") or []
     if not email:
         return 400, {"message": "Email is required."}
-    rows = load("carts.json")
-    found = False
-    for row in rows:
-        if row.get("email") == email:
-            row["items"] = items
-            found = True
-            break
-    if not found:
-        rows.append({"email": email, "items": items})
-    save("carts.json", rows)
-    return 200, {"email": email, "items": items}
+    row = fetch_one(
+        """
+        INSERT INTO carts (email, items)
+        VALUES (%s, %s)
+        ON CONFLICT (email)
+        DO UPDATE SET items = EXCLUDED.items, updated_at = CURRENT_TIMESTAMP
+        RETURNING email, items
+        """,
+        (email, Jsonb(items)),
+    )
+    return 200, row
 
 
 app.get("/api/cart", get_cart)

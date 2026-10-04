@@ -3,16 +3,24 @@ import os
 from datetime import datetime, timedelta, timezone
 
 from common.books import NAMES
+from common.db import fetch_all, fetch_one
 from common.http import post_json
 from common.server import App
-from common.store import load, save
 
 app = App("learning")
 CERTIFICATES_URL = os.environ.get("CERTIFICATES_URL", "http://certificates:8080")
 
 
 def list_exams(_query):
-    return 200, load("exams.json")
+    rows = fetch_all(
+        """
+        SELECT name, email, book, score, passed,
+               to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI UTC') AS "when"
+        FROM exam_results
+        ORDER BY created_at DESC
+        """
+    )
+    return 200, rows
 
 
 def sit_exam(payload):
@@ -22,19 +30,17 @@ def sit_exam(payload):
     email = (payload.get("email") or "").lower()
     name = (payload.get("name") or "").strip()
     if not name:
-        hit = next((u for u in load("users.json") if u.get("email") == email), None)
+        hit = fetch_one("SELECT name FROM users WHERE email = %s", (email,))
         name = (hit or {}).get("name") or (email.split("@")[0] if email else "Learner")
-    row = {
-        "name": name,
-        "email": email,
-        "book": NAMES.get(book_id, book_id),
-        "score": score,
-        "passed": passed,
-        "when": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-    }
-    rows = load("exams.json")
-    rows.append(row)
-    save("exams.json", rows)
+    row = fetch_one(
+        """
+        INSERT INTO exam_results (name, email, book, score, passed)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING name, email, book, score, passed,
+                  to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI UTC') AS "when"
+        """,
+        (name, email, NAMES.get(book_id, book_id), score, passed),
+    )
     if passed:
         issued = datetime.now(timezone.utc)
         until = issued + timedelta(days=365)

@@ -96,7 +96,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -109,15 +108,6 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 10
-          env:
-            - name: DATA_DIR
-              value: "/data"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -231,7 +221,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -244,15 +233,6 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 10
-          env:
-            - name: DATA_DIR
-              value: "/data"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -303,7 +283,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -316,15 +295,6 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 10
-          env:
-            - name: DATA_DIR
-              value: "/data"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -375,7 +345,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -389,16 +358,8 @@ spec:
               port: 8080
             initialDelaySeconds: 10
           env:
-            - name: DATA_DIR
-              value: "/data"
             - name: CERTIFICATES_URL
               value: "http://certificates:8080"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -512,7 +473,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -525,15 +485,6 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 10
-          env:
-            - name: DATA_DIR
-              value: "/data"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -584,7 +535,6 @@ spec:
                 name: cloudops-config
             - secretRef:
                 name: cloudops-db
-                optional: true
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -597,15 +547,6 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 10
-          env:
-            - name: DATA_DIR
-              value: "/data"
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
