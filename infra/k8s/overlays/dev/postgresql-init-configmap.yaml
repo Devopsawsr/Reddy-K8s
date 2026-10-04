@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-sql
+  labels:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: cloudops
+data:
+  01-init.sql: |
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(100) UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    INSERT INTO users (username, email)
+    VALUES ('admin', 'admin@cloudops.local')
+    ON CONFLICT (username) DO NOTHING;
