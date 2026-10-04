@@ -4,52 +4,52 @@ namespace: cloudops-dev
 commonLabels:
   env: dev
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - pgadmin.yaml
-  - postgresql-init-configmap.yaml
-  - postgresql-service.yaml
-  - postgresql-statefulset.yaml
-  - database-migration.yaml
-  - ../../base
+- namespace.yaml
+- configmap.yaml
+- pgadmin.yaml
+- postgresql-init-configmap.yaml
+- postgresql-service.yaml
+- postgresql-statefulset.yaml
+- database-migration.yaml
+- ../../base
 patchesStrategicMerge:
-  - gateway-lb.yaml
+- gateway-lb.yaml
 replicas:
-  - name: gateway
-    count: 1
-  - name: web
-    count: 1
+- count: 1
+  name: gateway
+- count: 1
+  name: web
 images:
-  - name: cloudops/auth
-    newName: docker.io/jaganmr49/cloudops-auth
-    newTag: c54af1b22cb5
-  - name: cloudops/cart
-    newName: docker.io/jaganmr49/cloudops-cart
-    newTag: c54af1b22cb5
-  - name: cloudops/catalog
-    newName: docker.io/jaganmr49/cloudops-catalog
-    newTag: c54af1b22cb5
-  - name: cloudops/certificates
-    newName: docker.io/jaganmr49/cloudops-certificates
-    newTag: c54af1b22cb5
-  - name: cloudops/community
-    newName: docker.io/jaganmr49/cloudops-community
-    newTag: c54af1b22cb5
-  - name: cloudops/gateway
-    newName: docker.io/jaganmr49/cloudops-gateway
-    newTag: c54af1b22cb5
-  - name: cloudops/labs
-    newName: docker.io/jaganmr49/cloudops-labs
-    newTag: c54af1b22cb5
-  - name: cloudops/leaderboard
-    newName: docker.io/jaganmr49/cloudops-leaderboard
-    newTag: c54af1b22cb5
-  - name: cloudops/learning
-    newName: docker.io/jaganmr49/cloudops-learning
-    newTag: c54af1b22cb5
-  - name: cloudops/orders
-    newName: docker.io/jaganmr49/cloudops-orders
-    newTag: c54af1b22cb5
-  - name: cloudops/web
-    newName: docker.io/jaganmr49/cloudops-web
-    newTag: c54af1b22cb5
+- name: cloudops/auth
+  newName: docker.io/jaganmr49/cloudops-auth
+  newTag: 7901e9a38aef
+- name: cloudops/cart
+  newName: docker.io/jaganmr49/cloudops-cart
+  newTag: 7901e9a38aef
+- name: cloudops/catalog
+  newName: docker.io/jaganmr49/cloudops-catalog
+  newTag: 7901e9a38aef
+- name: cloudops/certificates
+  newName: docker.io/jaganmr49/cloudops-certificates
+  newTag: 7901e9a38aef
+- name: cloudops/community
+  newName: docker.io/jaganmr49/cloudops-community
+  newTag: 7901e9a38aef
+- name: cloudops/gateway
+  newName: docker.io/jaganmr49/cloudops-gateway
+  newTag: 7901e9a38aef
+- name: cloudops/labs
+  newName: docker.io/jaganmr49/cloudops-labs
+  newTag: 7901e9a38aef
+- name: cloudops/leaderboard
+  newName: docker.io/jaganmr49/cloudops-leaderboard
+  newTag: 7901e9a38aef
+- name: cloudops/learning
+  newName: docker.io/jaganmr49/cloudops-learning
+  newTag: 7901e9a38aef
+- name: cloudops/orders
+  newName: docker.io/jaganmr49/cloudops-orders
+  newTag: 7901e9a38aef
+- name: cloudops/web
+  newName: docker.io/jaganmr49/cloudops-web
+  newTag: 7901e9a38aef
