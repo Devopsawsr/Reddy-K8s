@@ -104,20 +104,64 @@ if (loginForm) {
 function cart() {
   return JSON.parse(localStorage.getItem("coa_cart") || "[]");
 }
-function saveCart(items) {
+
+function renderCart(items) {
   localStorage.setItem("coa_cart", JSON.stringify(items));
   const el = document.getElementById("cart-count");
   if (el) el.textContent = items.reduce((n, i) => n + i.qty, 0);
+
+  const list = document.getElementById("cart-list");
+  if (!list) return;
+  if (!items.length) {
+    list.innerHTML = "<tr><td colspan=\"3\">Cart is empty. Add a book from the round icons.</td></tr>";
+    return;
+  }
+  list.innerHTML = items
+    .map((i) => {
+      const b = book(i.id);
+      return `<tr><td>${b.name}</td><td>${i.qty}</td><td>$${b.price * i.qty}</td></tr>`;
+    })
+    .join("");
 }
-function addCart(id) {
+
+async function loadCart() {
+  const user = session();
+  if (!user || !user.email) {
+    renderCart([]);
+    return [];
+  }
+  const res = await fetch(`/api/cart?email=${encodeURIComponent(user.email)}`);
+  if (!res.ok) throw new Error("Cart service is currently unavailable.");
+  const saved = await res.json();
+  const items = saved.items || [];
+  renderCart(items);
+  return items;
+}
+
+async function saveCart(items) {
+  const user = session();
+  if (!user || !user.email) throw new Error("Please log in before adding products to the cart.");
+  const res = await fetch("/api/cart", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email: user.email, items }),
+  });
+  if (!res.ok) throw new Error("Cart service is currently unavailable. Your cart was not updated.");
+  const saved = await res.json();
+  renderCart(saved.items || items);
+  return saved.items || items;
+}
+
+async function addCart(id) {
   const items = cart();
   const hit = items.find((i) => i.id === id);
   if (hit) hit.qty += 1;
   else items.push({ id, qty: 1 });
-  saveCart(items);
+  await saveCart(items);
 }
-function buyNow(id) {
-  addCart(id);
+
+async function buyNow(id) {
+  await addCart(id);
   window.location.href = "cart.html";
 }
 
@@ -133,31 +177,23 @@ if (wall) {
       </div>
     </div>`
   ).join("");
-  wall.addEventListener("click", (e) => {
+  wall.addEventListener("click", async (e) => {
     const add = e.target.dataset.add;
     const buy = e.target.dataset.buy;
-    if (add) addCart(add);
-    if (buy) buyNow(buy);
+    try {
+      if (add) await addCart(add);
+      if (buy) await buyNow(buy);
+    } catch (error) {
+      window.alert(error.message);
+      if (!session()) window.location.href = "login.html";
+    }
   });
 }
-saveCart(cart());
+renderCart(cart());
+loadCart().catch((error) => console.error(error.message));
 
 function book(id) {
   return BOOKS.find((b) => b.id === id);
-}
-
-const list = document.getElementById("cart-list");
-if (list) {
-  const items = cart();
-  if (!items.length) list.innerHTML = "<p>Cart is empty. Add a book from the round icons.</p>";
-  else {
-    list.innerHTML = items
-      .map((i) => {
-        const b = book(i.id);
-        return `<tr><td>${b.name}</td><td>${i.qty}</td><td>$${b.price * i.qty}</td></tr>`;
-      })
-      .join("");
-  }
 }
 
 const buyForm = document.getElementById("buy-form");
@@ -179,9 +215,13 @@ if (buyForm) {
       body: JSON.stringify({ email, name, items }),
     });
     const body = await res.json();
-    saveCart([]);
     const note = document.getElementById("buy-note");
     note.style.display = "block";
+    if (!res.ok) {
+      note.textContent = body.message || "Purchase failed.";
+      return;
+    }
+    await saveCart([]);
     note.textContent = body.message || "Purchased.";
     setTimeout(() => (window.location.href = "exam.html"), 800);
   });
