@@ -22,34 +22,34 @@ replicas:
 images:
 - name: cloudops/auth
   newName: docker.io/jaganmr49/cloudops-auth
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/cart
   newName: docker.io/jaganmr49/cloudops-cart
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/catalog
   newName: docker.io/jaganmr49/cloudops-catalog
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/certificates
   newName: docker.io/jaganmr49/cloudops-certificates
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/community
   newName: docker.io/jaganmr49/cloudops-community
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/gateway
   newName: docker.io/jaganmr49/cloudops-gateway
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/labs
   newName: docker.io/jaganmr49/cloudops-labs
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/leaderboard
   newName: docker.io/jaganmr49/cloudops-leaderboard
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/learning
   newName: docker.io/jaganmr49/cloudops-learning
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/orders
   newName: docker.io/jaganmr49/cloudops-orders
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
 - name: cloudops/web
   newName: docker.io/jaganmr49/cloudops-web
-  newTag: 7901e9a38aef
+  newTag: b7a093da2c7e
