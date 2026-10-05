@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/app.css?v=storefront-4">
+  <link rel="stylesheet" href="assets/app.css?v=storefront-6">
 </head>
 <body class="store-page">
   <div class="store-strip"><strong>TECH BOOK FEST</strong><span>Up to 40% off selected learning paths</span><a href="#catalog">Shop now →</a></div>
@@ -47,10 +47,9 @@
         </div>
         <div class="book-scene" aria-hidden="true">
           <div class="orbit o-a"></div><div class="orbit o-b"></div>
-          <div class="hero-book hb-1"><small>FOUNDATIONS</small><b>C</b><span>Programming</span></div>
-          <div class="hero-book hb-2"><small>AUTOMATION</small><b>Python</b><span>for Engineers</span></div>
-          <div class="hero-book hb-3"><small>PLATFORM</small><b>K8s</b><span>Production Guide</span></div>
-          <div class="floating-code c1">git push</div><div class="floating-code c2">kubectl apply</div><div class="floating-code c3">terraform plan</div>
+          <div class="hero-book hb-1"><small>AWS · AZURE · PLATFORM</small><img src="logos/aws.svg" alt="Cloud"><b>Cloud</b><span>Engineering Handbook</span></div>
+          <div class="hero-book hb-2"><small>CI/CD · GITOPS · SRE</small><img src="logos/devops.svg" alt="DevOps"><b>DevOps</b><span>Production Delivery</span></div>
+          <div class="floating-code c1">aws eks update-kubeconfig</div><div class="floating-code c2">kubectl apply</div><div class="floating-code c3">terraform plan</div>
         </div>
       </div>
     </section>
@@ -418,5 +417,6 @@ deployment.apps/you configured</pre></div></div>
   <div class="store-toast" id="store-toast" role="status" aria-live="polite"></div>
   <script src="assets/shop.js?v=storefront-5"></script>
   <script>const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.1});document.querySelectorAll('.reveal-on-scroll,.legacy-reveal').forEach(element=>revealObserver.observe(element));</script>
+  <script>const scene=document.querySelector('.book-scene');if(scene&&matchMedia('(pointer:fine)').matches){scene.addEventListener('pointermove',event=>{const box=scene.getBoundingClientRect();const x=(event.clientX-box.left)/box.width-.5;const y=(event.clientY-box.top)/box.height-.5;scene.style.setProperty('--scene-x',`${-y*8}deg`);scene.style.setProperty('--scene-y',`${x*12}deg`);scene.style.setProperty('--light-x',`${(x+.5)*100}%`);scene.style.setProperty('--light-y',`${(y+.5)*100}%`)});scene.addEventListener('pointerleave',()=>{scene.style.setProperty('--scene-x','0deg');scene.style.setProperty('--scene-y','0deg')})}</script>
 </body>
 </html>
