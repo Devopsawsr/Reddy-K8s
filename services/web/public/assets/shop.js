@@ -239,6 +239,35 @@ if (catalog) {
       </article>`;
     }).join("");
   };
+  const renderShelves = (rows) => {
+    const shelves = document.getElementById("store-shelves");
+    if (!shelves || state.query || state.category !== "All") return;
+    const byCategory = (category) => rows.filter((book) => book.category === category);
+    const groups = [
+      { eyebrow: "JUST ADDED", title: "New releases", books: [...rows].slice(-12).reverse() },
+      { eyebrow: "READER FAVOURITES", title: "Technology bestsellers", books: [...rows].sort((a, b) => b.rating - a.rating).slice(0, 12) },
+      { eyebrow: "BUILD THE FUNDAMENTALS", title: "Programming languages", books: byCategory("Programming").slice(0, 12) },
+      { eyebrow: "SHIP AND OPERATE", title: "Cloud & DevOps essentials", books: [...byCategory("Cloud"), ...byCategory("DevOps")].slice(0, 12) },
+      { eyebrow: "WORK WITH DATA", title: "Databases, streaming & search", books: byCategory("Data").slice(0, 12) },
+      { eyebrow: "DEFEND THE PLATFORM", title: "Cybersecurity collection", books: byCategory("Security").slice(0, 12) },
+      { eyebrow: "BUILD WHAT IS NEXT", title: "AI, GenAI & machine learning", books: byCategory("AI").slice(0, 12) },
+      { eyebrow: "HIGH VALUE LEARNING", title: "Books under $20", books: rows.filter((book) => book.price < 20).slice(0, 12) },
+    ];
+    shelves.innerHTML = groups.map((group, groupIndex) => `
+      <section class="book-shelf ${groupIndex % 2 ? "tinted" : ""}">
+        <div class="wrap">
+          <div class="shelf-head"><div><span class="store-kicker">${group.eyebrow}</span><h2>${group.title}</h2></div><button type="button" data-shelf-scroll="${groupIndex}">View all →</button></div>
+          <div class="shelf-track" data-shelf="${groupIndex}">
+            ${group.books.map((book) => `<article class="shelf-card">
+              <div class="mini-cover" style="--cover:${escapeHtml(book.accent)}"><small>${escapeHtml(book.category)}</small><strong>${escapeHtml(book.symbol)}</strong><b>${escapeHtml(book.name)}</b></div>
+              <span class="shelf-rating">★ ${book.rating}</span>
+              <h3>${escapeHtml(book.name)}</h3>
+              <div><b>$${book.price}</b><button type="button" data-shelf-add="${book.id}">Add</button></div>
+            </article>`).join("")}
+          </div>
+        </div>
+      </section>`).join("");
+  };
   const loadCatalog = async () => {
     const params = new URLSearchParams();
     if (state.query) params.set("q", state.query);
@@ -254,6 +283,7 @@ if (catalog) {
       else BOOKS.push(remote);
     });
     renderCatalog(rows);
+    renderShelves(rows);
   };
   Promise.all([
     fetch("/api/inventory").then((res) => res.ok ? res.json() : { items: [] }),
@@ -285,6 +315,22 @@ if (catalog) {
   });
   catalog.addEventListener("click", async (event) => {
     const id = event.target.dataset.add;
+    if (!id) return;
+    try {
+      await addCart(id);
+      toast(`${book(id).name} added to your cart`);
+    } catch (error) {
+      window.alert(error.message);
+      if (!session()) window.location.href = "login.html";
+    }
+  });
+  document.getElementById("store-shelves").addEventListener("click", async (event) => {
+    const id = event.target.dataset.shelfAdd;
+    const shelfIndex = event.target.dataset.shelfScroll;
+    if (shelfIndex !== undefined) {
+      document.querySelector(`[data-shelf="${shelfIndex}"]`).scrollBy({ left: 720, behavior: "smooth" });
+      return;
+    }
     if (!id) return;
     try {
       await addCart(id);

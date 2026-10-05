@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/app.css?v=storefront-2">
+  <link rel="stylesheet" href="assets/app.css?v=storefront-3">
 </head>
 <body class="store-page">
   <div class="store-strip">Free lab access with every book · Practice what you read</div>
@@ -60,6 +60,20 @@
       <article><span>♢</span><div><b>Career focused</b><small>Interview and production ready</small></div></article>
     </section>
 
+    <section class="wrap subject-section">
+      <div class="store-section-head"><div><span class="store-kicker">BROWSE YOUR WAY</span><h2>Shop by subject</h2></div></div>
+      <div class="subject-grid">
+        <button data-category="Programming"><b>&lt;/&gt;</b><span>Programming</span><small>C to modern web</small></button>
+        <button data-category="Cloud"><b>☁</b><span>Cloud Computing</span><small>AWS, Azure and GCP</small></button>
+        <button data-category="DevOps"><b>∞</b><span>DevOps &amp; SRE</span><small>Delivery and operations</small></button>
+        <button data-category="Data"><b>▤</b><span>Data &amp; Databases</span><small>SQL, NoSQL and streaming</small></button>
+        <button data-category="Security"><b>⌾</b><span>Cybersecurity</span><small>Cloud and application security</small></button>
+        <button data-category="AI"><b>✦</b><span>AI &amp; Machine Learning</span><small>LLMs, agents and MLOps</small></button>
+      </div>
+    </section>
+
+    <section class="store-shelves" id="store-shelves"></section>
+
     <section class="wrap store-section" id="catalog">
       <div class="store-section-head"><div><span class="store-kicker">CURATED FOR YOU</span><h2>Technology bestsellers</h2><p>Build strong foundations, then move into cloud-native engineering.</p></div><span id="catalog-count" class="catalog-count"></span></div>
       <div class="catalog-toolbar">
@@ -89,6 +103,6 @@ deployment.apps/you configured</pre></div></div>
 
   <footer class="store-footer"><div class="wrap"><div><a class="store-brand inverted" href="/"><span class="store-mark">&lt;/&gt;</span><span>CloudOps <b>Books</b></span></a><p>Practical technology learning for builders, operators and future platform engineers.</p></div><div><b>Learn</b><a href="books.html">Books</a><a href="courses.html">Courses</a><a href="labs.html">Labs</a></div><div><b>Practice</b><a href="exams.html">Exams</a><a href="certificates.html">Certificates</a><a href="community.html">Community</a></div><div><b>Platform</b><a href="index.html#platform">Architecture</a><a href="index.html#devops">DevOps</a><a href="contact.html">Contact</a></div></div></footer>
   <div class="store-toast" id="store-toast" role="status" aria-live="polite"></div>
-  <script src="assets/shop.js?v=storefront-2"></script>
+  <script src="assets/shop.js?v=storefront-3"></script>
 </body>
 </html>
