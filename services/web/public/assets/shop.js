@@ -211,8 +211,28 @@ if (catalog) {
     el.classList.add("show");
     window.setTimeout(() => el.classList.remove("show"), 2200);
   };
+  const technologyLogo = (book) => {
+    const value = `${book.id} ${book.name}`.toLowerCase();
+    const rules = [
+      [/kubernetes|k8s|eks|operator|openshift/, "kubernetes.svg"], [/jenkins/, "jenkins.svg"],
+      [/postgres|sql|database|rds|warehouse|mysql|oracle/, "postgresql.svg"], [/mongo/, "mongodb.svg"],
+      [/redis|cache/, "redis.svg"], [/terraform|infrastructure as code/, "terraform.svg"],
+      [/docker|container/, "docker.svg"], [/ansible|awx/, "ansible.svg"], [/argo|gitops/, "argo.svg"],
+      [/github actions|github|pull request|git and/, "githubactions.svg"], [/\bgit\b/, "git.svg"],
+      [/python|data science/, "python.svg"], [/linux|bash|shell/, "linux.svg"], [/helm/, "helm.svg"],
+      [/prometheus|metrics/, "prometheus.svg"], [/grafana|dashboard|loki/, "grafana.svg"],
+      [/opentelemetry|observability|telemetry/, "opentelemetry.svg"], [/elastic|elk/, "elasticsearch.svg"],
+      [/opensearch|search platform/, "opensearch.svg"], [/nginx|gateway/, "nginx.svg"], [/istio|mesh/, "istio.svg"],
+      [/tensorflow/, "tensorflow.svg"], [/pytorch|deep learning/, "pytorch.svg"], [/mlops|mlflow|model registr/, "mlflow.svg"],
+      [/aws|amazon|cloud|serverless|lambda|iam|s3|finops|migration|bedrock|sagemaker/, "aws.svg"],
+      [/devops|ci\/cd|pipeline|sre|platform|incident|chaos|tekton|gitlab/, "devops.svg"],
+      [/security|zero trust|sast|threat|cryptography|compliance/, "devops.svg"]
+    ];
+    const hit = rules.find(([pattern]) => pattern.test(value));
+    return hit ? `logos/${hit[1]}` : "";
+  };
   const renderCatalog = (rows) => {
-    const sorted = [...rows];
+    const sorted = [...new Map(rows.map((row) => [row.id, row])).values()];
     if (state.sort === "price-low") sorted.sort((a, b) => a.price - b.price);
     if (state.sort === "price-high") sorted.sort((a, b) => b.price - a.price);
     if (state.sort === "name") sorted.sort((a, b) => a.name.localeCompare(b.name));
@@ -222,10 +242,11 @@ if (catalog) {
     catalog.innerHTML = sorted.map((b, index) => {
       const stock = state.inventory[b.id];
       const stockText = stock === undefined ? "Checking stock" : stock > 10 ? "In stock" : `Only ${stock} left`;
-      return `<article class="store-book-card reveal" style="--delay:${Math.min(index, 10) * 45}ms">
+      const logo = technologyLogo(b);
+      return `<article class="store-book-card reveal" style="--delay:${Math.min(index, 10) * 35}ms">
         <div class="book-cover" style="--cover:${escapeHtml(b.accent)}">
           <span class="cover-category">${escapeHtml(b.category)}</span>
-          <strong>${escapeHtml(b.symbol)}</strong>
+          <div class="cover-visual">${logo ? `<img src="${logo}" alt="">` : ""}<strong>${escapeHtml(b.symbol)}</strong></div>
           <b>${escapeHtml(b.name)}</b>
           <small>CloudOps Press</small>
         </div>
@@ -283,7 +304,6 @@ if (catalog) {
       else BOOKS.push(remote);
     });
     renderCatalog(rows);
-    renderShelves(rows);
   };
   Promise.all([
     fetch("/api/inventory").then((res) => res.ok ? res.json() : { items: [] }),
@@ -324,7 +344,8 @@ if (catalog) {
       if (!session()) window.location.href = "login.html";
     }
   });
-  document.getElementById("store-shelves").addEventListener("click", async (event) => {
+  const storeShelves = document.getElementById("store-shelves");
+  if (storeShelves) storeShelves.addEventListener("click", async (event) => {
     const id = event.target.dataset.shelfAdd;
     const shelfIndex = event.target.dataset.shelfScroll;
     if (shelfIndex !== undefined) {
