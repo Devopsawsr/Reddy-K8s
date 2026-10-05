@@ -4,61 +4,61 @@ namespace: cloudops-dev
 commonLabels:
   env: dev
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - pgadmin.yaml
-  - postgresql-init-configmap.yaml
-  - postgresql-service.yaml
-  - postgresql-statefulset.yaml
-  - database-migration.yaml
-  - ../../base
+- namespace.yaml
+- configmap.yaml
+- pgadmin.yaml
+- postgresql-init-configmap.yaml
+- postgresql-service.yaml
+- postgresql-statefulset.yaml
+- database-migration.yaml
+- ../../base
 patchesStrategicMerge:
-  - gateway-lb.yaml
+- gateway-lb.yaml
 replicas:
-  - name: gateway
-    count: 1
-  - name: web
-    count: 1
+- count: 1
+  name: gateway
+- count: 1
+  name: web
 images:
-  - name: cloudops/auth
-    newName: docker.io/jaganmr49/cloudops-auth
-    newTag: c54af1b22cb5
-  - name: cloudops/cart
-    newName: docker.io/jaganmr49/cloudops-cart
-    newTag: c54af1b22cb5
-  - name: cloudops/catalog
-    newName: docker.io/jaganmr49/cloudops-catalog
-    newTag: c54af1b22cb5
-  - name: cloudops/search
-    newName: docker.io/jaganmr49/cloudops-search
-    newTag: dev
-  - name: cloudops/inventory
-    newName: docker.io/jaganmr49/cloudops-inventory
-    newTag: dev
-  - name: cloudops/recommendations
-    newName: docker.io/jaganmr49/cloudops-recommendations
-    newTag: dev
-  - name: cloudops/certificates
-    newName: docker.io/jaganmr49/cloudops-certificates
-    newTag: c54af1b22cb5
-  - name: cloudops/community
-    newName: docker.io/jaganmr49/cloudops-community
-    newTag: c54af1b22cb5
-  - name: cloudops/gateway
-    newName: docker.io/jaganmr49/cloudops-gateway
-    newTag: c54af1b22cb5
-  - name: cloudops/labs
-    newName: docker.io/jaganmr49/cloudops-labs
-    newTag: c54af1b22cb5
-  - name: cloudops/leaderboard
-    newName: docker.io/jaganmr49/cloudops-leaderboard
-    newTag: c54af1b22cb5
-  - name: cloudops/learning
-    newName: docker.io/jaganmr49/cloudops-learning
-    newTag: c54af1b22cb5
-  - name: cloudops/orders
-    newName: docker.io/jaganmr49/cloudops-orders
-    newTag: c54af1b22cb5
-  - name: cloudops/web
-    newName: docker.io/jaganmr49/cloudops-web
-    newTag: c54af1b22cb5
+- name: cloudops/auth
+  newName: docker.io/jaganmr49/cloudops-auth
+  newTag: 5013fdd1c120
+- name: cloudops/cart
+  newName: docker.io/jaganmr49/cloudops-cart
+  newTag: 5013fdd1c120
+- name: cloudops/catalog
+  newName: docker.io/jaganmr49/cloudops-catalog
+  newTag: 5013fdd1c120
+- name: cloudops/certificates
+  newName: docker.io/jaganmr49/cloudops-certificates
+  newTag: 5013fdd1c120
+- name: cloudops/community
+  newName: docker.io/jaganmr49/cloudops-community
+  newTag: 5013fdd1c120
+- name: cloudops/gateway
+  newName: docker.io/jaganmr49/cloudops-gateway
+  newTag: 5013fdd1c120
+- name: cloudops/inventory
+  newName: docker.io/jaganmr49/cloudops-inventory
+  newTag: 5013fdd1c120
+- name: cloudops/labs
+  newName: docker.io/jaganmr49/cloudops-labs
+  newTag: 5013fdd1c120
+- name: cloudops/leaderboard
+  newName: docker.io/jaganmr49/cloudops-leaderboard
+  newTag: 5013fdd1c120
+- name: cloudops/learning
+  newName: docker.io/jaganmr49/cloudops-learning
+  newTag: 5013fdd1c120
+- name: cloudops/orders
+  newName: docker.io/jaganmr49/cloudops-orders
+  newTag: 5013fdd1c120
+- name: cloudops/recommendations
+  newName: docker.io/jaganmr49/cloudops-recommendations
+  newTag: 5013fdd1c120
+- name: cloudops/search
+  newName: docker.io/jaganmr49/cloudops-search
+  newTag: 5013fdd1c120
+- name: cloudops/web
+  newName: docker.io/jaganmr49/cloudops-web
+  newTag: 5013fdd1c120
