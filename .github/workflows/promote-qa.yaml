@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [gateway, web, auth, catalog, cart, orders, learning, labs, community, certificates, leaderboard]
+        service: [gateway, web, auth, catalog, search, inventory, recommendations, cart, orders, learning, labs, community, certificates, leaderboard]
     steps:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4

@@ -1,27 +1,94 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Books Store — Cloud and DevOps</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/app.css"></head><body>
-
-<header class="nav">
-  <div class="wrap nav-inner">
-    <a class="logo" href="index.html"><img class="brand" src="logos/brand-logo.jpg" alt=""><span class="wordmark"><i>Cloud</i> <b>and</b> <em>DevOps</em></span></a>
-    <nav class="links">
-      <a href="solutions.html">Solutions</a>
-      <a href="paths.html">Paths</a>
-      <a href="books.html">Books</a>
-      <a href="courses.html">Courses</a>
-      <a href="exams.html">Exams</a>
-      <a href="labs.html">Labs</a>
-      <a href="community.html">Community</a>
-      <a href="blog.html">Blog</a>
-      <a href="pricing.html">Pricing</a>
-    </nav>
-    <div class="actions">
-      <a class="btn ghost" href="login.html">Sign in</a>
-      <a class="btn primary" href="pricing.html">Start free</a>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A curated technology bookstore for programming, cloud, DevOps, data, security and AI.">
+  <title>CloudOps Books — Learn technology one chapter at a time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="store-page">
+  <div class="store-strip">Free lab access with every book · Practice what you read</div>
+  <header class="store-nav">
+    <div class="wrap store-nav-main">
+      <a class="store-brand" href="index.html"><span class="store-mark">&lt;/&gt;</span><span>CloudOps <b>Books</b></span></a>
+      <form class="store-search" id="store-search-form" role="search">
+        <span aria-hidden="true">⌕</span>
+        <input id="store-search" type="search" autocomplete="off" placeholder="Search C, Python, AWS, Kubernetes…" aria-label="Search books">
+        <button type="submit">Search</button>
+      </form>
+      <div class="store-actions"><span id="auth-slot"></span><a class="store-cart" href="cart.html">Cart <span id="cart-count">0</span></a></div>
     </div>
-  </div>
-</header>
-<section class="hero wrap"><p class="kicker">Store</p><h1>Cloud engineering ebooks.</h1></section><section class="wrap grid g4"><article class="card"><img src="covers/terraform.jpg" alt="Terraform in Practice"><div class="pad"><h3>Terraform in Practice</h3><p class="price">$19</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/eks.jpg" alt="Amazon EKS Operations"><div class="pad"><h3>Amazon EKS Operations</h3><p class="price">$24</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/aws.jpg" alt="AWS Cloud Foundations"><div class="pad"><h3>AWS Cloud Foundations</h3><p class="price">$22</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/docker.jpg" alt="Docker and Containers"><div class="pad"><h3>Docker and Containers</h3><p class="price">$16</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/ansible.jpg" alt="Ansible Automation"><div class="pad"><h3>Ansible Automation</h3><p class="price">$17</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/python.jpg" alt="Python for Operations"><div class="pad"><h3>Python for Operations</h3><p class="price">$20</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/observe.jpg" alt="Observability Lab"><div class="pad"><h3>Observability Lab</h3><p class="price">$21</p><a class="btn primary" href="login.html">Add to cart</a></div></article><article class="card"><img src="covers/github.jpg" alt="GitHub Actions Pipelines"><div class="pad"><h3>GitHub Actions Pipelines</h3><p class="price">$18</p><a class="btn primary" href="login.html">Add to cart</a></div></article></section><footer><div class="wrap foot"><span>Cloud and DevOps</span><span>Books · Courses · Labs · Exams</span></div></footer></body></html>
+    <nav class="wrap store-categories" aria-label="Book categories">
+      <button class="active" type="button" data-category="All">All books</button>
+      <button type="button" data-category="Programming">Programming</button>
+      <button type="button" data-category="Cloud">Cloud</button>
+      <button type="button" data-category="DevOps">DevOps</button>
+      <button type="button" data-category="Data">Data</button>
+      <button type="button" data-category="Security">Security</button>
+      <button type="button" data-category="AI">AI &amp; ML</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="store-hero">
+      <div class="wrap store-hero-grid">
+        <div class="store-hero-copy">
+          <span class="store-eyebrow">THE ENGINEER'S DIGITAL BOOKSHELF</span>
+          <h1>Build skills that<br><em>ship to production.</em></h1>
+          <p>From your first C program to production Kubernetes, explore practical books written for modern technology careers.</p>
+          <div class="store-hero-actions"><a class="store-btn light" href="#catalog">Explore books</a><a class="store-btn outline" href="paths.html">View learning paths</a></div>
+          <div class="store-trust"><span>✓ Practical labs</span><span>✓ Lifetime access</span><span>✓ Skill certificates</span></div>
+        </div>
+        <div class="book-scene" aria-hidden="true">
+          <div class="orbit o-a"></div><div class="orbit o-b"></div>
+          <div class="hero-book hb-1"><small>FOUNDATIONS</small><b>C</b><span>Programming</span></div>
+          <div class="hero-book hb-2"><small>AUTOMATION</small><b>Python</b><span>for Engineers</span></div>
+          <div class="hero-book hb-3"><small>PLATFORM</small><b>K8s</b><span>Production Guide</span></div>
+          <div class="floating-code c1">git push</div><div class="floating-code c2">kubectl apply</div><div class="floating-code c3">terraform plan</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap store-benefits" aria-label="Store benefits">
+      <article><span>⌁</span><div><b>50+ technology titles</b><small>From fundamentals to advanced</small></div></article>
+      <article><span>◫</span><div><b>Hands-on learning</b><small>Books connected to live labs</small></div></article>
+      <article><span>↻</span><div><b>Always current</b><small>Updated for modern platforms</small></div></article>
+      <article><span>♢</span><div><b>Career focused</b><small>Interview and production ready</small></div></article>
+    </section>
+
+    <section class="wrap store-section" id="catalog">
+      <div class="store-section-head"><div><span class="store-kicker">CURATED FOR YOU</span><h2>Technology bestsellers</h2><p>Build strong foundations, then move into cloud-native engineering.</p></div><span id="catalog-count" class="catalog-count"></span></div>
+      <div class="catalog-toolbar">
+        <div class="filter-chips" id="filter-chips">
+          <button class="active" type="button" data-category="All">All</button>
+          <button type="button" data-category="Programming">Languages</button>
+          <button type="button" data-category="Cloud">Cloud</button>
+          <button type="button" data-category="DevOps">DevOps</button>
+          <button type="button" data-category="Data">Databases</button>
+          <button type="button" data-category="Security">Security</button>
+          <button type="button" data-category="AI">AI &amp; ML</button>
+        </div>
+        <select id="catalog-sort" aria-label="Sort books"><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="name">Title: A–Z</option></select>
+      </div>
+      <div class="book-catalog" id="book-catalog"></div>
+      <div class="empty-catalog" id="empty-catalog" hidden><b>No books found</b><span>Try another search or category.</span></div>
+    </section>
+
+    <section class="store-banner">
+      <div class="wrap store-banner-grid"><div><span class="store-kicker">START WITH A CLEAR ROADMAP</span><h2>Not sure what to learn next?</h2><p>Follow role-based paths for Cloud Engineer, DevOps Engineer, Platform Engineer and SRE.</p><a class="store-btn dark" href="paths.html">Find your learning path →</a></div><div class="terminal-art"><i></i><i></i><i></i><pre>$ git clone career
+$ terraform plan
+Plan: 1 skill to add
+$ kubectl apply -f future.yaml
+deployment.apps/you configured</pre></div></div>
+    </section>
+  </main>
+
+  <footer class="store-footer"><div class="wrap"><div><a class="store-brand inverted" href="index.html"><span class="store-mark">&lt;/&gt;</span><span>CloudOps <b>Books</b></span></a><p>Practical technology learning for builders, operators and future platform engineers.</p></div><div><b>Learn</b><a href="books.html">Books</a><a href="courses.html">Courses</a><a href="labs.html">Labs</a></div><div><b>Practice</b><a href="exams.html">Exams</a><a href="certificates.html">Certificates</a><a href="community.html">Community</a></div><div><b>Platform</b><a href="index.html#platform">Architecture</a><a href="index.html#devops">DevOps</a><a href="contact.html">Contact</a></div></div></footer>
+  <div class="store-toast" id="store-toast" role="status" aria-live="polite"></div>
+  <script src="assets/shop.js"></script>
+</body>
+</html>

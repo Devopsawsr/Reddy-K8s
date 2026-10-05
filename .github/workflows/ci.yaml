@@ -60,6 +60,9 @@ jobs:
           - web
           - auth
           - catalog
+          - search
+          - inventory
+          - recommendations
           - cart
           - orders
           - learning

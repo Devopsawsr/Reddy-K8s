@@ -27,6 +27,15 @@ images:
   - name: cloudops/catalog
     newName: REPLACE_ECR/cloudops-catalog
     newTag: "0.1-qa"
+  - name: cloudops/search
+    newName: REPLACE_ECR/cloudops-search
+    newTag: "0.1-qa"
+  - name: cloudops/inventory
+    newName: REPLACE_ECR/cloudops-inventory
+    newTag: "0.1-qa"
+  - name: cloudops/recommendations
+    newName: REPLACE_ECR/cloudops-recommendations
+    newTag: "0.1-qa"
   - name: cloudops/cart
     newName: REPLACE_ECR/cloudops-cart
     newTag: "0.1-qa"

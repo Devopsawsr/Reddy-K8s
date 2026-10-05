@@ -198,11 +198,108 @@ if (wall) {
     }
   });
 }
+
+const catalog = document.getElementById("book-catalog");
+if (catalog) {
+  const state = { category: "All", query: "", sort: "featured", inventory: {} };
+  const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (ch) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+  }[ch]));
+  const toast = (message) => {
+    const el = document.getElementById("store-toast");
+    el.textContent = message;
+    el.classList.add("show");
+    window.setTimeout(() => el.classList.remove("show"), 2200);
+  };
+  const renderCatalog = (rows) => {
+    const sorted = [...rows];
+    if (state.sort === "price-low") sorted.sort((a, b) => a.price - b.price);
+    if (state.sort === "price-high") sorted.sort((a, b) => b.price - a.price);
+    if (state.sort === "name") sorted.sort((a, b) => a.name.localeCompare(b.name));
+    if (state.sort === "featured") sorted.sort((a, b) => b.rating - a.rating);
+    document.getElementById("catalog-count").textContent = `${sorted.length} titles`;
+    document.getElementById("empty-catalog").hidden = sorted.length > 0;
+    catalog.innerHTML = sorted.map((b, index) => {
+      const stock = state.inventory[b.id];
+      const stockText = stock === undefined ? "Checking stock" : stock > 10 ? "In stock" : `Only ${stock} left`;
+      return `<article class="store-book-card reveal" style="--delay:${Math.min(index, 10) * 45}ms">
+        <div class="book-cover" style="--cover:${escapeHtml(b.accent)}">
+          <span class="cover-category">${escapeHtml(b.category)}</span>
+          <strong>${escapeHtml(b.symbol)}</strong>
+          <b>${escapeHtml(b.name)}</b>
+          <small>CloudOps Press</small>
+        </div>
+        <div class="store-book-info">
+          <span class="book-level">${escapeHtml(b.level)}</span>
+          <h3>${escapeHtml(b.name)}</h3>
+          <p>${escapeHtml(b.description)}</p>
+          <div class="book-rating"><span>★ ${b.rating}</span><small>${stockText}</small></div>
+          <div class="book-buy"><strong>$${b.price}</strong><button type="button" data-add="${b.id}">Add to cart</button></div>
+        </div>
+      </article>`;
+    }).join("");
+  };
+  const loadCatalog = async () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set("q", state.query);
+    if (state.category !== "All") params.set("category", state.category);
+    const endpoint = state.query || state.category !== "All" ? `/api/search?${params}` : "/api/books";
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("The book catalogue is temporarily unavailable.");
+    const payload = await response.json();
+    const rows = Array.isArray(payload) ? payload : payload.items;
+    rows.forEach((remote) => {
+      const existing = BOOKS.find((item) => item.id === remote.id);
+      if (existing) Object.assign(existing, remote);
+      else BOOKS.push(remote);
+    });
+    renderCatalog(rows);
+  };
+  Promise.all([
+    fetch("/api/inventory").then((res) => res.ok ? res.json() : { items: [] }),
+    loadCatalog()
+  ]).then(([stock]) => {
+    state.inventory = Object.fromEntries((stock.items || []).map((item) => [item.book_id, item.quantity]));
+    loadCatalog();
+  }).catch((error) => {
+    catalog.innerHTML = `<p class="catalog-error">${escapeHtml(error.message)}</p>`;
+  });
+  document.querySelectorAll("[data-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.category = button.dataset.category;
+      document.querySelectorAll("[data-category]").forEach((item) => item.classList.toggle("active", item.dataset.category === state.category));
+      loadCatalog();
+      document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+  const searchForm = document.getElementById("store-search-form");
+  searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    state.query = document.getElementById("store-search").value.trim();
+    loadCatalog();
+    document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
+  });
+  document.getElementById("catalog-sort").addEventListener("change", (event) => {
+    state.sort = event.target.value;
+    loadCatalog();
+  });
+  catalog.addEventListener("click", async (event) => {
+    const id = event.target.dataset.add;
+    if (!id) return;
+    try {
+      await addCart(id);
+      toast(`${book(id).name} added to your cart`);
+    } catch (error) {
+      window.alert(error.message);
+      if (!session()) window.location.href = "login.html";
+    }
+  });
+}
 renderCart(cart());
 loadCart().catch((error) => console.error(error.message));
 
 function book(id) {
-  return BOOKS.find((b) => b.id === id);
+  return BOOKS.find((b) => b.id === id) || { id, name: id, price: 0 };
 }
 
 const cartList = document.getElementById("cart-list");
