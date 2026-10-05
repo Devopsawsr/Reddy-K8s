@@ -94,6 +94,35 @@
       <div class="empty-catalog" id="empty-catalog" hidden><b>No books found</b><span>Try another search or category.</span></div>
     </section>
 
+    <section class="devops-showcase" id="devops-platform">
+      <div class="devops-glow glow-one"></div><div class="devops-glow glow-two"></div>
+      <div class="wrap">
+        <div class="devops-heading reveal-on-scroll"><span>BEYOND THE BOOKS</span><h2>Learn DevOps by running a<br><em>real microservices platform.</em></h2><p>The storefront itself is the lab: independently built services, container delivery, Kubernetes orchestration, PostgreSQL persistence and observable production workflows.</p></div>
+        <div class="devops-stats reveal-on-scroll">
+          <article><strong>14</strong><b>Microservices</b><small>Independent APIs and web workloads</small></article>
+          <article><strong>3</strong><b>Environments</b><small>Development, QA and production overlays</small></article>
+          <article><strong>114+</strong><b>Technology books</b><small>Searchable catalogue with inventory</small></article>
+          <article><strong>GitOps</strong><b>Delivery model</b><small>Build once and promote the same image</small></article>
+        </div>
+        <div class="delivery-stage reveal-on-scroll">
+          <div class="delivery-copy"><span>LIVE DELIVERY FLOW</span><h3>From developer commit to a running Kubernetes pod</h3><p>Every change follows a reviewable, repeatable path. The moving signal represents the same image progressing through the delivery chain.</p></div>
+          <div class="delivery-flow" aria-label="GitOps delivery pipeline"><div class="flow-line"><i></i></div>
+            <article><div>01</div><b>GitHub</b><small>Source and pull request</small></article><article><div>02</div><b>CI Pipeline</b><small>Test, scan and build</small></article><article><div>03</div><b>Docker Hub</b><small>Immutable image tag</small></article><article><div>04</div><b>Argo CD</b><small>Git reconciliation</small></article><article><div>05</div><b>Kubernetes</b><small>Healthy workloads</small></article>
+          </div>
+        </div>
+        <div class="engineering-grid">
+          <article class="engineering-card reveal-on-scroll"><span>☸</span><h3>Kubernetes &amp; EKS</h3><p>Deployments, Services, ConfigMaps, Secrets, probes, resource controls, persistent storage and environment overlays.</p><div><b>kubeadm</b><b>EKS</b><b>Helm</b><b>Kustomize</b></div></article>
+          <article class="engineering-card reveal-on-scroll"><span>◫</span><h3>Terraform &amp; AWS</h3><p>Reusable modules, remote state, locking, environment isolation and approval-controlled infrastructure delivery.</p><div><b>VPC</b><b>EC2</b><b>RDS</b><b>IAM</b></div></article>
+          <article class="engineering-card reveal-on-scroll"><span>∞</span><h3>CI/CD &amp; GitOps</h3><p>One build creates an immutable image that is promoted through environments with validation and rollback controls.</p><div><b>Actions</b><b>Jenkins</b><b>Argo CD</b><b>ECR</b></div></article>
+          <article class="engineering-card reveal-on-scroll"><span>⌁</span><h3>Observability</h3><p>Metrics, logs, dashboards and alerts prove that deployments are healthy and customer journeys work.</p><div><b>Prometheus</b><b>Grafana</b><b>CloudWatch</b><b>OTel</b></div></article>
+        </div>
+        <div class="terminal-pair reveal-on-scroll">
+          <div class="live-terminal"><header><i></i><i></i><i></i><b>terraform plan</b></header><code><span>$ terraform plan -var-file=dev.tfvars</span><span class="muted">Terraform will perform the following actions:</span><span class="green">+ create aws_eks_node_group.apps</span><span class="amber">~ update aws_lb.gateway</span><strong>Plan: 1 to add, 1 to change, 0 to destroy.</strong></code></div>
+          <div class="live-terminal"><header><i></i><i></i><i></i><b>kubectl rollout</b></header><code><span>$ kubectl get pods -n cloudops-dev</span><span>web &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>1/1 Running</em></span><span>gateway &nbsp;&nbsp;&nbsp;&nbsp; <em>1/1 Running</em></span><span>postgresql-0 <em>1/1 Running</em></span><strong>✓ deployment successfully rolled out</strong></code></div>
+        </div>
+      </div>
+    </section>
+
     <section class="store-banner">
       <div class="wrap store-banner-grid"><div><span class="store-kicker">START WITH A CLEAR ROADMAP</span><h2>Not sure what to learn next?</h2><p>Follow role-based paths for Cloud Engineer, DevOps Engineer, Platform Engineer and SRE.</p><a class="store-btn dark" href="paths.html">Find your learning path →</a></div><div class="terminal-art"><i></i><i></i><i></i><pre>$ git clone career
 $ terraform plan
@@ -105,6 +134,7 @@ deployment.apps/you configured</pre></div></div>
 
   <footer class="store-footer"><div class="wrap"><div><a class="store-brand inverted" href="/"><span class="store-mark">&lt;/&gt;</span><span>CloudOps <b>Books</b></span></a><p>Practical technology learning for builders, operators and future platform engineers.</p></div><div><b>Learn</b><a href="books.html">Books</a><a href="courses.html">Courses</a><a href="labs.html">Labs</a></div><div><b>Practice</b><a href="exams.html">Exams</a><a href="certificates.html">Certificates</a><a href="community.html">Community</a></div><div><b>Platform</b><a href="index.html#platform">Architecture</a><a href="index.html#devops">DevOps</a><a href="contact.html">Contact</a></div></div></footer>
   <div class="store-toast" id="store-toast" role="status" aria-live="polite"></div>
-  <script src="assets/shop.js?v=storefront-4"></script>
+  <script src="assets/shop.js?v=storefront-5"></script>
+  <script>const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.14});document.querySelectorAll('.reveal-on-scroll').forEach(element=>revealObserver.observe(element));</script>
 </body>
 </html>
