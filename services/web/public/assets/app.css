@@ -680,3 +680,19 @@ footer { background: #1b1518; color: #d8ccd3; padding: 48px 0; }
 @media(prefers-reduced-motion:reduce){.store-hero::before,.flash-deal,.flash-deal::before,.flash-deal-ring::after{animation:none}}
 .sale-lockup strong{font-size:44px;line-height:.85}.sale-lockup span{font-size:18px}.flash-deal strong{font-size:35px;line-height:.9}.flash-deal strong span{font-size:16px}.flash-deal b{font-size:15px}
 @media(max-width:700px){.flash-deal strong{font-size:29px}.flash-deal b{font-size:12px}}
+
+/* Premium bookstore hero refinement */
+.flash-deal{top:126px;right:max(22px,calc((100vw - 1240px)/2));width:112px;border:5px solid #17233d;background:#fff;color:#17233d;filter:drop-shadow(0 14px 20px rgba(23,35,61,.25));transform:rotate(4deg);animation:deal-float 5s ease-in-out infinite}
+.flash-deal::before{inset:-9px;border:2px solid #f47a1f;border-radius:50%;background:transparent;clip-path:none;animation:none}.flash-deal::after{inset:5px;border:1px solid #f47a1f}.flash-deal-ring::after{background:linear-gradient(90deg,transparent,rgba(244,122,31,.2),transparent);animation-duration:5.5s}.flash-deal small{color:#697386}.flash-deal strong{color:#e85d04;font-size:34px}.flash-deal strong span{color:#e85d04;font-size:15px}.flash-deal b{color:#17233d;font-size:14px}.flash-deal em{background:#17233d;color:#fff;font-size:6px}
+@keyframes deal-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+.book-scene{min-height:455px;animation:none;transform:rotateX(var(--scene-x,0deg)) rotateY(var(--scene-y,0deg));transition:transform .3s ease-out}
+.book-scene::before{inset:60px 5px 15px;background:radial-gradient(ellipse at 50% 72%,rgba(255,255,255,.6),rgba(255,218,125,.18) 52%,transparent 72%);filter:blur(10px)}
+.hero-bookfest-title{top:34px;font-family:Manrope,sans-serif;font-style:normal;line-height:1;letter-spacing:.02em;transform:translateZ(30px)}.hero-bookfest-title span{font-size:17px;letter-spacing:.27em;text-shadow:none}.hero-bookfest-title b{margin-top:5px;color:#17233d;font-size:34px;-webkit-text-stroke:0;text-shadow:0 2px 0 #fff,0 9px 20px rgba(23,35,61,.14)}
+.scene-swoosh{left:34px;right:22px;bottom:37px;height:72px;border:0;border-radius:50%;background:radial-gradient(ellipse at center,rgba(23,35,61,.32) 0,rgba(23,35,61,.12) 42%,transparent 70%);filter:blur(5px);rotate:0deg;opacity:1;transform:translateZ(-20px)}
+.hero-book{top:162px;width:122px;height:205px;padding:15px 12px;border-radius:5px 10px 10px 5px;box-shadow:-7px 13px 22px rgba(49,34,20,.24),inset 6px 0 rgba(255,255,255,.13);animation:premium-book-float 6s ease-in-out infinite;transition:transform .35s ease,filter .35s ease,box-shadow .35s ease}
+.hero-book::after{right:-7px;width:9px}.hero-book img{width:48px;height:48px;margin:auto 0 12px;animation:none}.hero-book b{font-size:22px}.hero-book span{font-size:10px}.hero-book:hover{scale:1;filter:saturate(1.06) brightness(1.03);box-shadow:-9px 18px 28px rgba(49,34,20,.3),inset 6px 0 rgba(255,255,255,.13);animation-play-state:paused}
+.hb-1{left:12px;top:178px;z-index:1;transform:rotateY(9deg) rotateZ(-5deg) translateZ(0);animation-name:premium-book-float}.hb-2{left:132px;top:147px;z-index:3;transform:rotateY(5deg) rotateZ(-1.5deg) translateZ(22px);animation-name:premium-book-float;animation-delay:-1.5s}.hb-3{left:254px;top:147px;z-index:3;transform:rotateY(-5deg) rotateZ(1.5deg) translateZ(22px);animation-name:premium-book-float;animation-delay:-3s}.hb-4{left:374px;top:178px;z-index:1;transform:rotateY(-9deg) rotateZ(5deg) translateZ(0);animation-name:premium-book-float;animation-delay:-4.5s}
+@keyframes premium-book-float{0%,100%{translate:0 0}50%{translate:0 -7px}}
+@media(max-width:980px){.flash-deal{top:106px}.book-scene{width:510px}}
+@media(max-width:700px){.flash-deal{top:94px;width:90px}.book-scene{width:510px}.hero-bookfest-title{top:25px}}
+@media(prefers-reduced-motion:reduce){.flash-deal,.hero-book{animation:none}}
