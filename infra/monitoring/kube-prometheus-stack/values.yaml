@@ -1,0 +1,20 @@
+# Lab monitoring for the kubeadm cluster.
+# Installed with Helm into the monitoring namespace. Do not commit the Grafana password.
+#
+# helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# helm repo update
+# helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+#   --namespace monitoring --create-namespace \
+#   -f infra/monitoring/kube-prometheus-stack/values.yaml \
+#   --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD"
+#
+# The control-plane toleration is only for this lab while k8s-worker-01 is NotReady
+# from disk pressure. Remove it after that worker is Ready again.
+
+grafana:
+  service:
+    type: NodePort
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule

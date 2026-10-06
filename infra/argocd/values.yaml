@@ -1,0 +1,11 @@
+# Argo CD install for the kubeadm lab. The Applications under apps/ stay separate.
+# helm repo add argo https://argoproj.github.io/argo-helm
+# helm upgrade --install argocd argo/argo-cd #   --namespace argocd --create-namespace #   -f infra/argocd/values.yaml
+
+configs:
+  params:
+    server.insecure: "true"
+
+server:
+  service:
+    type: NodePort

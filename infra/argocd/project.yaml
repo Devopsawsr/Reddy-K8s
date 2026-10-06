@@ -32,6 +32,10 @@ spec:
       kind: PersistentVolumeClaim
     - group: apps
       kind: Deployment
+    - group: apps
+      kind: StatefulSet
+    - group: batch
+      kind: Job
     - group: autoscaling
       kind: HorizontalPodAutoscaler
     - group: policy
