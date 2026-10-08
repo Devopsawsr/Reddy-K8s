@@ -7,5 +7,6 @@ rm -f "$DEST"
 zip -r "$DEST" microservice \
   -x 'microservice/**/.DS_Store' \
   -x 'microservice/**/__pycache__/*' \
+  -x 'microservice/data/*.json'
 ls -lh "$DEST"
 echo "Upload this zip in AWS Console → S3."
