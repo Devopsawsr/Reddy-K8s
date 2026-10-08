@@ -13,6 +13,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  DOCKERHUB_NAMESPACE: jaganmr49
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -50,8 +53,9 @@ jobs:
 
   build:
     needs: validate
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -74,18 +78,72 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Resolve image tag
+        id: revision
+        run: echo "tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build image
         run: |
           set -euo pipefail
+          image="docker.io/${DOCKERHUB_NAMESPACE}/cloudops-${{ matrix.service }}"
           docker build \
-            -t cloudops/${{ matrix.service }}:ci \
-            -f services/${{ matrix.service }}/Dockerfile .
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            -t "${image}:${{ steps.revision.outputs.tag }}" \
+            -f "services/${{ matrix.service }}/Dockerfile" .
 
       - name: Scan image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: cloudops/${{ matrix.service }}:ci
+          image-ref: docker.io/${{ env.DOCKERHUB_NAMESPACE }}/cloudops-${{ matrix.service }}:${{ steps.revision.outputs.tag }}
           format: table
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: "1"
+
+      - name: Push image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          image="docker.io/${DOCKERHUB_NAMESPACE}/cloudops-${{ matrix.service }}"
+          docker push "${image}:${{ steps.revision.outputs.tag }}"
+
+  sonar:
+    name: SonarQube
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check SonarQube token
+        id: sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${SONAR_TOKEN}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "SONAR_TOKEN is not set. Code scan is skipped until the secret exists."
+          fi
+
+      - name: SonarQube scan
+        if: steps.sonar.outputs.enabled == 'true'
+        uses: SonarSource/sonarqube-scan-action@v5.3.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}

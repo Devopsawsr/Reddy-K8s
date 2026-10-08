@@ -116,8 +116,8 @@ kubectl describe deployment gateway -n cloudops-dev
 
 The repository follows **build once, promote the same immutable image**:
 
-1. `ci.yaml` validates Python, Docker Compose and every Kustomize overlay, builds all 11 images and blocks high/critical Trivy findings.
-2. `deploy-dev.yaml` runs only after successful CI on `main`, publishes commit-SHA images to Docker Hub and updates the Dev overlay.
+1. `ci.yaml` validates Python, Docker Compose and every Kustomize overlay, builds all 14 images tagged with the 12-character commit id, blocks high/critical Trivy findings on that same image, and pushes it to Docker Hub on `main`.
+2. `deploy-dev.yaml` runs only after successful CI on `main`. It does not build again. It checks that the commit tag exists and writes that tag into the Dev overlay.
 3. `promote-qa.yaml` copies the selected tested Docker Hub images into ECR without rebuilding and updates the QA overlay.
 4. `release-production.yaml` verifies that the QA-approved images exist in ECR and updates the Production desired state after GitHub Environment approval.
 5. Argo CD automatically reconciles Dev and QA. Production is intentionally synchronized manually after reviewing the Argo CD diff.
