@@ -1,4 +1,4 @@
-# CloudOps Microservices Platform
+## CloudOps Microservices Platform ##
 
 An end-to-end Kubernetes and DevOps demonstration project containing a web application, an NGINX API gateway, and nine independently deployable Python API services.
 
